@@ -147,6 +147,27 @@ router.delete("/:id([0-9]{1,2})", (req, res) => {
   }
 });
 
+// middlewares:
+const loggerMiddleware = (req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+};
+
+router.use(loggerMiddleware);
+
+// Error handling middleware
+router.use((err, req, res, next) => {
+  // Default error status code
+  const statusCode = err.statusCode || 500;
+
+  // Default error message
+  const message = err.message || "Internal Server Error";
+
+  // Sending the error response
+  console.log("hello");
+  res.status(statusCode).json({ error: `${message}` });
+});
+
 app.listen(PORT, URI, () => {
   console.log(`Server is running on port ${PORT} at ${URI}`);
 });
